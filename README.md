@@ -2,7 +2,7 @@
 
 Create AI-powered talking avatars with emotions! Generate or upload character images, add speech, and bring them to life with synchronized lip-sync animations.
 
-![Demo Video](talking-avatar-demo.mp4)
+[![Demo Video](talking-avatar-demo.mp4)](https://github.com/vtrivedy/talking-avatar/blob/main/talking-avatar-demo.mp4)
 
 ![Koala Logo](koala-logo.svg)
 
