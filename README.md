@@ -6,6 +6,8 @@ Create AI-powered talking avatars with emotions! Generate or upload character im
 https://github.com/user-attachments/assets/5cd2ad7b-a584-494d-b1fa-3f58a85da46a
 
 
+https://github.com/vtrivedy/talking-avatar/blob/main/talking-avatar-demo.mp4
+
 ![Koala Logo](koala-logo.svg)
 
 ## ✨ Features
