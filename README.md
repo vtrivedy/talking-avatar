@@ -1,6 +1,8 @@
 # 🐨 Talking Avatar
 
-Create AI-powered talking avatars with ease! Generate or upload character images, add speech, and bring them to life with synchronized lip-sync animations.
+Create AI-powered talking avatars with emotions! Generate or upload character images, add speech, and bring them to life with synchronized lip-sync animations.
+
+![Demo Video](talking-avatar-demo.mp4)
 
 ![Koala Logo](koala-logo.svg)
 
