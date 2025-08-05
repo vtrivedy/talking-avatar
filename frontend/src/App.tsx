@@ -1,14 +1,17 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Card } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
 import { CharacterStage } from '@/components/CharacterStage'
 import { AudioStage } from '@/components/AudioStage'
 import { GenerateStage } from '@/components/GenerateStage'
 import { SidePanel } from '@/components/SidePanel'
 import { StageIndicator } from '@/components/StageIndicator'
-import { Sparkles, Wand2, Music, Video } from 'lucide-react'
+import { Gallery } from '@/components/Gallery'
+import { Sparkles, Wand2, Music, Video, Grid3X3 } from 'lucide-react'
 
 export type Stage = 'character' | 'audio' | 'generate'
+export type View = 'create' | 'gallery'
 
 export interface AppState {
   stage: Stage
@@ -24,6 +27,7 @@ function App() {
     audioUrl: null,
     videoUrl: null,
   })
+  const [view, setView] = useState<View>('create')
 
   const updateState = (updates: Partial<AppState>) => {
     setState(prev => ({ ...prev, ...updates }))
@@ -56,72 +60,114 @@ function App() {
           />
         </div>
 
-        {/* Main Content */}
-        <div className="flex-1 flex flex-col">
-          {/* Header */}
-          <header className="p-8 text-center pt-20">
-            <motion.div
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="space-y-4"
-            >
-              <h1 className="text-5xl md:text-6xl font-display font-bold gradient-text">
-                Talking Avatar
-              </h1>
-              <p className="text-xl text-white/60">
-                Create amazing AI-powered talking avatars in minutes
-              </p>
-            </motion.div>
-          </header>
-
-          {/* Stage Indicator */}
-          <div className="px-8 mb-8">
-            <StageIndicator 
-              stages={stages} 
-              currentStage={state.stage} 
-              onStageClick={(stage) => {
-                // Allow navigation only to completed stages
-                if (stage === 'character' || 
-                    (stage === 'audio' && state.characterUrl) ||
-                    (stage === 'generate' && state.characterUrl && state.audioUrl)) {
-                  updateState({ stage: stage as Stage })
-                }
-              }}
-            />
-          </div>
-
-          {/* Stage Content */}
-          <main className="flex-1 px-8 pb-8">
-            <Card className="h-full">
-              <AnimatePresence mode="wait">
-                {state.stage === 'character' && (
-                  <CharacterStage 
-                    key="character"
-                    state={state}
-                    updateState={updateState}
-                  />
-                )}
-                {state.stage === 'audio' && (
-                  <AudioStage 
-                    key="audio"
-                    state={state}
-                    updateState={updateState}
-                  />
-                )}
-                {state.stage === 'generate' && (
-                  <GenerateStage 
-                    key="generate"
-                    state={state}
-                    updateState={updateState}
-                  />
-                )}
-              </AnimatePresence>
-            </Card>
-          </main>
+        {/* Navigation in top right */}
+        <div className="absolute top-6 right-6 z-20 flex gap-3">
+          <Button
+            variant={view === 'create' ? 'default' : 'secondary'}
+            onClick={() => setView('create')}
+            className="flex items-center gap-2"
+          >
+            <Sparkles className="w-4 h-4" />
+            Create
+          </Button>
+          <Button
+            variant={view === 'gallery' ? 'default' : 'secondary'}
+            onClick={() => setView('gallery')}
+            className="flex items-center gap-2"
+          >
+            <Grid3X3 className="w-4 h-4" />
+            Gallery
+          </Button>
         </div>
 
-        {/* Side Panel */}
-        <SidePanel state={state} />
+        {/* Main Content */}
+        <AnimatePresence mode="wait">
+          {view === 'create' ? (
+            <motion.div
+              key="create"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="flex-1 flex"
+            >
+              <div className="flex-1 flex flex-col">
+                {/* Header */}
+                <header className="p-8 text-center pt-20">
+                  <motion.div
+                    initial={{ opacity: 0, y: -20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="space-y-4"
+                  >
+                    <h1 className="text-5xl md:text-6xl font-display font-bold gradient-text">
+                      Talking Avatar
+                    </h1>
+                    <p className="text-xl text-white/60">
+                      Create amazing AI-powered talking avatars in minutes
+                    </p>
+                  </motion.div>
+                </header>
+
+                {/* Stage Indicator */}
+                <div className="px-8 mb-8">
+                  <StageIndicator 
+                    stages={stages} 
+                    currentStage={state.stage} 
+                    onStageClick={(stage) => {
+                      // Allow navigation only to completed stages
+                      if (stage === 'character' || 
+                          (stage === 'audio' && state.characterUrl) ||
+                          (stage === 'generate' && state.characterUrl && state.audioUrl)) {
+                        updateState({ stage: stage as Stage })
+                      }
+                    }}
+                  />
+                </div>
+
+                {/* Stage Content */}
+                <main className="flex-1 px-8 pb-8">
+                  <Card className="h-full">
+                    <AnimatePresence mode="wait">
+                      {state.stage === 'character' && (
+                        <CharacterStage 
+                          key="character"
+                          state={state}
+                          updateState={updateState}
+                        />
+                      )}
+                      {state.stage === 'audio' && (
+                        <AudioStage 
+                          key="audio"
+                          state={state}
+                          updateState={updateState}
+                        />
+                      )}
+                      {state.stage === 'generate' && (
+                        <GenerateStage 
+                          key="generate"
+                          state={state}
+                          updateState={updateState}
+                        />
+                      )}
+                    </AnimatePresence>
+                  </Card>
+                </main>
+              </div>
+
+              {/* Side Panel */}
+              <SidePanel state={state} />
+            </motion.div>
+          ) : (
+            <motion.div
+              key="gallery"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="flex-1"
+            >
+              <Gallery />
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </div>
   )

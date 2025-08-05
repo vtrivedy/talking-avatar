@@ -252,7 +252,7 @@ async def list_characters():
     """List all saved characters."""
     files = []
     for file in sorted(CHARACTERS_DIR.glob("*"), key=lambda x: x.stat().st_mtime, reverse=True):
-        if file.is_file():
+        if file.is_file() and file.name != ".gitkeep" and file.suffix.lower() in [".png", ".jpg", ".jpeg", ".webp"]:
             files.append({
                 "id": file.stem,
                 "url": f"/storage/characters/{file.name}",
@@ -267,7 +267,7 @@ async def list_audio():
     """List all saved audio files."""
     files = []
     for file in sorted(AUDIO_DIR.glob("*"), key=lambda x: x.stat().st_mtime, reverse=True):
-        if file.is_file():
+        if file.is_file() and file.name != ".gitkeep" and file.suffix.lower() in [".mp3", ".wav", ".m4a", ".ogg"]:
             files.append({
                 "id": file.stem,
                 "url": f"/storage/audio/{file.name}",
@@ -282,7 +282,7 @@ async def list_avatars():
     """List all saved avatars."""
     files = []
     for file in sorted(AVATARS_DIR.glob("*"), key=lambda x: x.stat().st_mtime, reverse=True):
-        if file.is_file() and file.suffix == ".mp4":
+        if file.is_file() and file.name != ".gitkeep" and file.suffix.lower() in [".mp4", ".mov", ".avi", ".webm"]:
             files.append({
                 "id": file.stem,
                 "url": f"/storage/avatars/{file.name}",

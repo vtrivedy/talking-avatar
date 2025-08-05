@@ -17,6 +17,7 @@ export function CharacterStage({ state, updateState }: CharacterStageProps) {
   const [editPrompt, setEditPrompt] = useState('')
   const [loading, setLoading] = useState(false)
   const [file, setFile] = useState<File | null>(null)
+  const [filePreview, setFilePreview] = useState<string | null>(null)
 
   const generateCharacter = async () => {
     if (!prompt) return
@@ -50,6 +51,7 @@ export function CharacterStage({ state, updateState }: CharacterStageProps) {
       const response = await axios.post('/api/characters/upload', formData)
       updateState({ characterUrl: response.data.url })
       setFile(null)
+      setFilePreview(null)
     } catch (error) {
       console.error('Error uploading character:', error)
       alert('Failed to upload character')
@@ -132,21 +134,52 @@ export function CharacterStage({ state, updateState }: CharacterStageProps) {
             </TabsContent>
             
             <TabsContent value="upload" className="space-y-4">
-              <div
-                className="w-full h-64 rounded-lg glass border-2 border-dashed border-white/20 flex flex-col items-center justify-center cursor-pointer hover:bg-white/5 transition-colors"
-                onClick={() => document.getElementById('file-input')?.click()}
-              >
-                <Upload className="w-12 h-12 mb-4 text-white/40" />
-                <p className="text-white/60 mb-2">Click to upload or drag and drop</p>
-                <p className="text-sm text-white/40">PNG, JPG up to 10MB</p>
-                <input
-                  id="file-input"
-                  type="file"
-                  accept="image/*"
-                  className="hidden"
-                  onChange={(e) => setFile(e.target.files?.[0] || null)}
-                />
-              </div>
+              {!filePreview ? (
+                <div
+                  className="w-full h-64 rounded-lg glass border-2 border-dashed border-white/20 flex flex-col items-center justify-center cursor-pointer hover:bg-white/5 transition-colors"
+                  onClick={() => document.getElementById('file-input')?.click()}
+                >
+                  <Upload className="w-12 h-12 mb-4 text-white/40" />
+                  <p className="text-white/60 mb-2">Click to upload or drag and drop</p>
+                  <p className="text-sm text-white/40">PNG, JPG up to 10MB</p>
+                  <input
+                    id="file-input"
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={(e) => {
+                      const selectedFile = e.target.files?.[0]
+                      if (selectedFile) {
+                        setFile(selectedFile)
+                        const reader = new FileReader()
+                        reader.onloadend = () => {
+                          setFilePreview(reader.result as string)
+                        }
+                        reader.readAsDataURL(selectedFile)
+                      }
+                    }}
+                  />
+                </div>
+              ) : (
+                <div className="relative">
+                  <img
+                    src={filePreview}
+                    alt="Preview"
+                    className="w-full h-64 object-contain rounded-lg glass"
+                  />
+                  <button
+                    onClick={() => {
+                      setFile(null)
+                      setFilePreview(null)
+                    }}
+                    className="absolute top-2 right-2 bg-red-500/80 hover:bg-red-500 text-white p-2 rounded-full transition-colors"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
+              )}
               {file && (
                 <p className="text-sm text-white/60 text-center">
                   Selected: {file.name}
